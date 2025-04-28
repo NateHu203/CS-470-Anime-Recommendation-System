@@ -77,8 +77,9 @@ new_user_recommendations = recommender.recommend_for_new_user(new_user_ratings, 
 
 ## Model Performance
 
-- **Random Forest Regressor**: RMSE = 0.92, MAE = 0.76
-- **Decision Tree Regressor**: RMSE = 1.15, MAE = 0.89
+The following table summarizes the performance of various models evaluated:
+
+![Model Performance Results](results.png)
 
 ## Visualizations
 
