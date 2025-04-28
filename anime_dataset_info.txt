@@ -1,0 +1,156 @@
+anime_features_normalized.csv:
+
+Columns:
+anime_id, 
+name, 
+episodes, 
+rating, 
+members, 
+rating_count, 
+user_avg_rating, 
+user_median_rating, 
+user_rating_std, 
+popularity_percentile, 
+one-hot encoded: genre + type columns
+
+
+rating_enhanced.csv: 
+user_id, 
+anime_id, 
+rating, [contains NaNs since there are -1 rating in the original dataset]
+user behavior metrics (mean/median/std of ratings, rating count), 
+normalized_rating, 
+user genre preferences
+
+
+
+Model training flow:
+
+Use rating_train_v2.csv for training
+Use anime_features_normalized.csv for content features
+
+
+Model: learn to predict: "How would user X rate anime Y?"
+- input: user features, anime features, and their interaction (what is this?)
+- ouputL predicted rating (1-10) scale
+
+Evaluation:
+- using test to test prediciton accuracy by measuring RSME or MAE to assess performance
+
+
+
+
+MODEL INPUT SPECIFICATIONS:
+user_mean_rating: The average rating given by the user across all anime
+user_median_rating: The median rating given by the user (handles outliers better)
+user_rating_std: Standard deviation of ratings (measures consistency/variability)
+user_rating_count: Total number of anime rated (measures experience level)
+engagement_percentile: User's position relative to others in terms of activity
+genre_diversity: Number of different genres the user has watched --> "top_genres"
+
+
+
+
+
+
+
+description:
+
+
+# Current Situation of the Anime Recommendation System Project
+
+## Dataset Overview
+
+We are working with an anime recommendation system using two primary datasets:
+
+1. **anime.csv** containing:
+   - anime_id: Unique identifier for each anime
+   - name: Title of the anime
+   - genre: Comma-separated list of genres (e.g., "Drama, Romance, School, Supernatural")
+   - type: Format of the anime (TV, Movie, OVA, etc.)
+   - episodes: Number of episodes
+   - rating: Global platform rating (e.g., 9.37)
+   - members: Number of members who have this anime on their list
+
+2. **rating.csv** containing:
+   - user_id: Unique identifier for each user
+   - anime_id: Identifier linking to the anime dataset
+   - rating: User's rating (integer values, with -1 indicating the user has added but not rated the anime)
+
+## Data Preprocessing Steps
+
+A comprehensive preprocessing pipeline has been developed and outputs several processed files:
+
+1. **anime_features_normalized.csv**:
+   - Contains all anime features with normalized values
+   - Includes one-hot encoded genre and type columns
+   - Contains derived popularity metrics (rating_count, user_avg_rating, etc.)
+
+2. **rating_enhanced.csv**:
+   - Contains all ratings with additional user and anime features
+   - Includes user behavior metrics (mean/median/std of ratings, rating count)
+   - Includes normalized ratings and user genre preferences
+
+3. **rating_train_v2.csv** and **rating_test_v2.csv**:
+   - Split datasets for training and evaluation using a user-based approach
+   - Ensures test users have some ratings in the training set
+
+## Implementation Approaches
+
+Two distinct implementation approaches have been attempted:
+
+1. **First Implementation (AnimeRecommender class)**:
+   - Uses regression models (DecisionTreeRegressor and RandomForestRegressor)
+   - Implements comprehensive feature engineering
+   - Includes parallel processing for efficient recommendation generation
+   - Evaluates with appropriate regression metrics (RMSE, MAE)
+   - Provides both existing-user and new-user recommendation functionality
+   - Appears methodologically sound with realistic error metrics
+
+2. **Second Implementation (Simple script)**:
+   - Uses classification models (DecisionTreeClassifier and AdaBoostClassifier) 
+   - Treats each possible rating as a discrete class
+   - Has simpler preprocessing without as many derived features
+   - Reports suspiciously low error metrics (MSE of 0.0001)
+   - Contains several implementation issues including potential data leakage
+
+## Key Considerations
+
+1. **Classification vs. Regression**:
+   - User ratings are discrete integer values
+   - But there's an ordinal relationship between ratings (8 is better than 7)
+   - Regression better captures this relationship but requires rounding for final predictions
+
+2. **Model Performance**:
+   - The abnormally low MSE in the second implementation suggests issues
+   - Realistic RMSE values for such systems typically range from 0.8 to 1.2
+
+3. **Feature Engineering**:
+   - The first implementation has more comprehensive feature engineering
+   - User-based features (rating tendencies, genre preferences)
+   - Anime-based features (popularity, genre representation)
+   - Interaction features (implicit preferences)
+
+4. **System Architecture**:
+   - The first implementation has a modular, production-ready architecture
+   - Includes proper error handling, logging, and optimization
+   - Can handle both cold-start and existing user scenarios
+
+## Current Status
+
+The project has two working implementations with different approaches to the problem. The regression-based approach (first implementation) seems more methodologically sound and follows industry practices, despite potentially reporting higher (but more realistic) error metrics. The classification-based approach (second implementation) shows suspiciously low error metrics that suggest potential issues with the implementation rather than superior performance.
+
+The core of the recommendation system is predicting how a user would rate anime they haven't watched, then sorting these predictions from highest to lowest to provide personalized recommendations.
+
+
+
+
+user_mean_rating, user_median_rating, user_rating_count, user_rating_std, engagement_percentile, normalized_rating, top_genres, genre_diversity
+
+
+Version 2 feature colulmns:
+['user_mean_rating', 'user_rating_count', 'engagement_percentile', 'genre_diversity', 'episodes', 'members', 'rating_count', 'user_avg_rating', 'popularity_percentile', 'user_median_rating', 'user_rating_std', 'Unnamed: 10', 'Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Drama', 'Ecchi', 'Fantasy', 'Game', 'Harem', 'Hentai', 'Historical', 'Horror', 'Josei', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Military', 'Music', 'Mystery', 'Parody', 'Police', 'Psychological', 'Romance', 'Samurai', 'School', 'Sci-Fi', 'Seinen', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller', 'Vampire', 'Yaoi', 'Yuri', 'type_Movie', 'type_Music', 'type_ONA', 'type_OVA', 'type_Special', 'type_TV', 'type_Unknown']
+
+
+Version 3 feature colulmns:
+['user_mean_rating', 'user_median_rating_user', 'user_rating_count', 'user_rating_std_user', 'engagement_percentile', 'normalized_rating', 'genre_diversity', 'episodes', 'global_rating', 'members', 'rating_count', 'user_avg_rating', 'user_median_rating_anime', 'user_rating_std_anime', 'popularity_percentile', 'Action', 'Adventure', 'Cars', 'Comedy', 'Dementia', 'Demons', 'Drama', 'Ecchi', 'Fantasy', 'Game', 'Harem', 'Hentai', 'Historical', 'Horror', 'Josei', 'Kids', 'Magic', 'Martial Arts', 'Mecha', 'Military', 'Music', 'Mystery', 'Parody', 'Police', 'Psychological', 'Romance', 'Samurai', 'School', 'Sci-Fi', 'Seinen', 'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Slice of Life', 'Space', 'Sports', 'Super Power', 'Supernatural', 'Thriller', 'Vampire', 'Yaoi', 'Yuri', 'type_Movie', 'type_Music', 'type_ONA', 'type_OVA', 'type_Special', 'type_TV', 'type_Unknown']
