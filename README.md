@@ -79,7 +79,7 @@ new_user_recommendations = recommender.recommend_for_new_user(new_user_ratings, 
 
 The following table summarizes the performance of various models evaluated:
 
-![Model Performance Results](results.png)
+![Model Performance Results](experiment%20results.png)
 
 ## Visualizations
 
